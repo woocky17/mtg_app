@@ -1,7 +1,9 @@
+name: mtg-app
+
 services:
-  db:
+  mtg-db:
     image: postgres:16-alpine
-    container_name: mtg_db
+    container_name: mtg-db
     restart: unless-stopped
     environment:
       POSTGRES_USER: mtg
@@ -11,6 +13,37 @@ services:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mtg -d mtg_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  mtg-app:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: mtg-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "postgresql://mtg:mtg_password@mtg-db:5432/mtg_db?schema=public"
+    depends_on:
+      mtg-db:
+        condition: service_healthy
+
+  mtg-sync:
+    build:
+      context: ..
+      dockerfile: docker/sync/Dockerfile
+    container_name: mtg-sync
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: "postgresql://mtg:mtg_password@mtg-db:5432/mtg_db?schema=public"
+    depends_on:
+      mtg-db:
+        condition: service_healthy
 
 volumes:
   postgres_data:

@@ -1,0 +1,2 @@
+# Sync Scryfall cards daily at 04:00 UTC
+0 4 * * * cd /app && npx tsx scripts/sync-scryfall.ts >> /var/log/sync.log 2>&1

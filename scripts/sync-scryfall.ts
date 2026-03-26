@@ -9,7 +9,7 @@
  */
 
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../src/generated/prisma/client.ts";
+import { PrismaClient } from "../generated/prisma/client.ts";
 import "dotenv/config";
 
 const SCRYFALL_BULK_API = "https://api.scryfall.com/bulk-data";
