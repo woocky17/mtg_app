@@ -1,0 +1,133 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Card {
+  // --- Identifiers ---
+  id                  String   @id           // Scryfall UUID
+  oracle_id           String?               // Oracle ID (shared across printings)
+  multiverse_ids      Int[]                 // Multiverse IDs (Gatherer)
+  mtgo_id             Int?
+  mtgo_foil_id        Int?
+  tcgplayer_id        Int?
+  tcgplayer_etched_id Int?
+  cardmarket_id       Int?
+  arena_id            Int?
+  resource_id         String?
+
+  // --- Core card data ---
+  name           String
+  lang           String
+  released_at    DateTime              @db.Date
+  layout         String
+  highres_image  Boolean
+  image_status   String
+
+  // --- Mana / Stats ---
+  mana_cost  String?
+  cmc        Float
+  power      String?
+  toughness  String?
+
+  // --- Text ---
+  type_line   String
+  oracle_text String?
+  flavor_text String?
+
+  // --- Colors ---
+  colors         String[]
+  color_identity String[]
+  produced_mana  String[]
+
+  // --- Keywords / Parts ---
+  keywords  String[]
+  all_parts Json?     // RelatedCard[]
+
+  // --- Card faces (double-faced, split, etc.) ---
+  card_faces Json?    // CardFace[]
+
+  // --- Legalities ---
+  legalities Json     // Record<format, legality>
+
+  // --- Availability ---
+  games    String[]
+  finishes String[]
+
+  // --- Print flags ---
+  reserved     Boolean
+  game_changer Boolean?
+  foil         Boolean
+  nonfoil      Boolean
+  oversized    Boolean
+  promo        Boolean
+  reprint      Boolean
+  variation    Boolean
+  digital      Boolean
+  full_art     Boolean
+  textless     Boolean
+  booster      Boolean
+  story_spotlight Boolean
+
+  // --- Set info ---
+  set_id          String
+  set             String
+  set_name        String
+  set_type        String
+  collector_number String
+
+  // --- Appearance ---
+  rarity         String
+  border_color   String
+  frame          String
+  frame_effects  String[]
+  watermark      String?
+  security_stamp String?
+  promo_types    String[]
+
+  // --- Artist ---
+  artist          String?
+  artist_ids      String[]
+  illustration_id String?
+  card_back_id    String?
+
+  // --- Rankings ---
+  edhrec_rank Int?
+  penny_rank  Int?
+
+  // --- URIs ---
+  uri              String
+  scryfall_uri     String
+  set_uri          String
+  set_search_uri   String
+  scryfall_set_uri String
+  rulings_uri      String
+  prints_search_uri String
+
+  // --- Market data ---
+  prices        Json     // Record<currency, price | null>
+  purchase_uris Json?
+  related_uris  Json
+
+  // --- Preview ---
+  preview Json?  // { source, source_uri, previewed_at }
+
+  // --- Image URIs (single-faced cards) ---
+  image_uris Json?  // { small, normal, large, png, art_crop, border_crop }
+
+  // --- Timestamps (managed by our DB) ---
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("cards")
+}

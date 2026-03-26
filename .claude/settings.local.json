@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install prisma @prisma/client)",
+      "mcp__playwright",
+      "Bash(docker compose -f docker/docker-compose.yml up -d)",
+      "Bash(netstat -ano)",
+      "Bash(npx prisma:*)",
+      "Bash(npm run:*)"
+    ]
+  }
+}
