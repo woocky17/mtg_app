@@ -19,8 +19,9 @@
 
 ### Organisms (`src/components/organisms/`)
 - **header.tsx** — `Header` con logo MTG + navItems[] opcionales + rightContent slot.
-- **filter-bar.tsx** — `FilterBar` form GET con Input×3, Select×2, Button, Link limpiar. Constantes COLORS/RARITIES internas. Props: name, type, set, color, rarity.
-- **card-grid.tsx** — `CardGrid` responsive grid de CardThumbnail. Props: cards: CardSummary[], emptyMessage.
+- **filter-bar.tsx** — `FilterBar` form GET con Input×3 (name/type/set), Select×2 (color/rarity), Button, Link limpiar. Constantes COLORS/RARITIES internas. El input `set` usa `<datalist>` (dropdown searcheable nativo) alimentado por `sets: SetSummary[]`. Props: name, type, set, color, rarity, sets.
+- **card-grid.tsx** — `CardGrid` responsive grid de CardThumbnail. **Client Component** (useState) — al clicar una carta abre `CardModal`. Props: cards: CardSummary[], emptyMessage.
+- **card-modal.tsx** — `CardModal` popup con imagen grande de la carta. Client Component. Cierra con botón ×, click en backdrop, o tecla Escape. Bloquea scroll del body mientras está abierto. Props: card: CardSummary, onClose.
 - **pagination.tsx** — `Pagination` con PageButton. Props: currentPage, totalPages, total, buildUrl.
 - **sidebar.tsx** — `Sidebar` con StatBlock×3, ManaCurve, card list, Badge format. Datos hardcoded (placeholder).
 
@@ -34,7 +35,7 @@
 - Responsive adaptations
 
 ## Key Decisions
-- **Todo Server Components** — ningún componente usa "use client"
+- **Mayoría Server Components** — solo `card-grid` y `card-modal` usan "use client" (necesitan estado/eventos para el popup de carta)
 - **CSS variables** via inline styles — no hardcoded colors, todo themeable
 - **Props tipados** con interfaces locales — sin barrel exports por ahora
 - **CardSummary** del domain como tipo compartido entre molecules/organisms

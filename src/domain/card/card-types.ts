@@ -3,6 +3,11 @@ export interface CardFace {
   imageUris?: Record<string, string>;
 }
 
+export interface SetSummary {
+  code: string;
+  name: string;
+}
+
 export interface CardSummary {
   id: string;
   name: string;

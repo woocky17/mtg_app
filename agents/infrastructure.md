@@ -5,6 +5,8 @@
 ### `src/infrastructure/persistence/prisma-card-repository.ts`
 - `PrismaCardRepository` — implementa `CardRepository` port
 - `findMany(filters, pagination)` — builds Prisma where clause, executes count + findMany, maps to CardSummary
+- Orden: `released_at desc, name asc` (cartas más nuevas primero)
+- `findAllSets()` — distinct set + set_name ordenado por nombre, retorna `SetSummary[]`
 - `resolveImageUrl(imageUris, cardFaces)` — función interna que resuelve URL de imagen (single-face y double-face)
 - Select optimizado: solo los campos necesarios para CardSummary
 
@@ -15,8 +17,8 @@
 - `saveBulkDataToJson(type, outputDir)` — guarda metadata en JSON
 
 ### `src/infrastructure/container.ts`
-- Factory que instancia `PrismaCardRepository` y `GetCardsUseCase`
-- Export: `getCardsUseCase` (singleton)
+- Factory que instancia `PrismaCardRepository`, `GetCardsUseCase` y `GetSetsUseCase`
+- Exports: `getCardsUseCase`, `getSetsUseCase` (singletons)
 
 ## Pending
 - Repositorios para Deck, Collection

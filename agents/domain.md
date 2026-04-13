@@ -5,6 +5,7 @@
 ### `src/domain/card/card-types.ts`
 - `CardFace` — interface: name, imageUris?
 - `CardSummary` — interface: id, name, typeLine, manaCost, rarity, set, setName, colors, colorIdentity, imageUrl (ya resuelto)
+- `SetSummary` — interface: code, name (para dropdowns de filtros)
 
 ### `src/domain/card/card-filters.ts`
 - `CardFilters` — interface: name?, color?, rarity?, type?, set?
@@ -12,7 +13,7 @@
 - `PaginatedResult<T>` — interface: items, total, page, totalPages
 
 ### `src/domain/card/card-repository-port.ts`
-- `CardRepository` — interface con `findMany(filters, pagination) → PaginatedResult<CardSummary>`
+- `CardRepository` — interface con `findMany(filters, pagination) → PaginatedResult<CardSummary>` y `findAllSets() → SetSummary[]`
 
 ## Pending
 - Card entity completa (con todos los campos de Prisma model para detalle)

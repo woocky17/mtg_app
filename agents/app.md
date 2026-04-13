@@ -11,12 +11,13 @@
 - Compone: MainLayout + Header(navItems) + SearchBar + CardPlaceholder grid (24) + Sidebar
 - Navegación: Cartas(/cards), Mazos(#), Colección(#)
 
-### `src/app/cards/page.tsx` (~70 líneas)
+### `src/app/cards/page.tsx`
 - Server Component async con `searchParams` (Promise-based, Next.js 16)
 - Parsea filtros de query params → CardFilters
 - Llama `getCardsUseCase.execute(filters, pagination)` desde `@/infrastructure/container`
 - Compone: MainLayout + Header(rightContent=count) + FilterBar + CardGrid + Pagination
 - `buildUrl()` helper para construir URLs preservando filtros
+- Try/catch alrededor del use case: renderiza estado de error amigable inline (detecta errores de conexión Prisma P1001/P1002/ECONNREFUSED)
 
 ### `src/app/globals.css`
 - Tailwind CSS v4 imports + `@theme inline` block

@@ -7,6 +7,10 @@
 - `execute(filters, pagination)` → `PaginatedResult<CardSummary>`
 - Actualmente es un pass-through al repository (la lógica de negocio crecerá aquí)
 
+### `src/application/card/get-sets-use-case.ts`
+- `GetSetsUseCase` — class con constructor(CardRepository)
+- `execute()` → `SetSummary[]` (lista distinct de sets para dropdowns)
+
 ## Pending
 - GetCardByIdUseCase — detalle de carta individual
 - CreateDeckUseCase, AddCardToDeckUseCase

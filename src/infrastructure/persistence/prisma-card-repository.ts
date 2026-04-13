@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import type { CardRepository } from "@/domain/card/card-repository-port";
-import type { CardSummary } from "@/domain/card/card-types";
+import type { CardSummary, SetSummary } from "@/domain/card/card-types";
 import type { CardFilters, PaginationParams, PaginatedResult } from "@/domain/card/card-filters";
 
 function resolveImageUrl(
@@ -37,7 +37,7 @@ export class PrismaCardRepository implements CardRepository {
       prisma.card.count({ where }),
       prisma.card.findMany({
         where,
-        orderBy: [{ name: "asc" }],
+        orderBy: [{ released_at: "desc" }, { name: "asc" }],
         skip: (pagination.page - 1) * pagination.pageSize,
         take: pagination.pageSize,
         select: {
@@ -75,5 +75,14 @@ export class PrismaCardRepository implements CardRepository {
       page: pagination.page,
       totalPages: Math.max(1, Math.ceil(total / pagination.pageSize)),
     };
+  }
+
+  async findAllSets(): Promise<SetSummary[]> {
+    const rows = await prisma.card.findMany({
+      distinct: ["set"],
+      select: { set: true, set_name: true },
+      orderBy: { set_name: "asc" },
+    });
+    return rows.map((r) => ({ code: r.set, name: r.set_name }));
   }
 }

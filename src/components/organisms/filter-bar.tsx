@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Input } from "@/components/atoms/input";
 import { Select } from "@/components/atoms/select";
 import { Button } from "@/components/atoms/button";
+import type { SetSummary } from "@/domain/card/card-types";
 
 const COLORS = [
   { value: "W", label: "☀ Blanco" },
@@ -24,9 +25,10 @@ interface FilterBarProps {
   set: string;
   color: string;
   rarity: string;
+  sets: SetSummary[];
 }
 
-export function FilterBar({ name, type, set, color, rarity }: FilterBarProps) {
+export function FilterBar({ name, type, set, color, rarity, sets }: FilterBarProps) {
   const hasFilters = name || color || rarity || type || set;
 
   return (
@@ -39,7 +41,18 @@ export function FilterBar({ name, type, set, color, rarity }: FilterBarProps) {
     >
       <Input name="name" defaultValue={name} placeholder="Nombre..." width="200px" />
       <Input name="type" defaultValue={type} placeholder="Tipo..." width="160px" />
-      <Input name="set" defaultValue={set} placeholder="Código set..." width="120px" />
+      <Input
+        name="set"
+        defaultValue={set}
+        placeholder="Set..."
+        width="200px"
+        list="sets-list"
+      />
+      <datalist id="sets-list">
+        {sets.map((s) => (
+          <option key={s.code} value={s.code} label={`${s.code.toUpperCase()} — ${s.name}`} />
+        ))}
+      </datalist>
       <Select
         name="color"
         defaultValue={color}
