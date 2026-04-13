@@ -17,6 +17,13 @@
 - PostgreSQL 16 Alpine, container `mtg_db`
 - Credenciales: user=mtg, password=mtg_password, db=mtg_db
 - Puerto: **5433**:5432, volume persistente
+- Usa `build:` — para desarrollo local
+
+### `docker/docker-compose.prod.yml`
+- Misma stack pero con `image: dortet/mtg-app:latest` y `dortet/mtg-sync:latest` en vez de build
+- **Watchtower**: polling cada 300s, auto-pull + restart cuando hay imagen nueva en Docker Hub
+- Solo monitoriza containers con label `com.centurylinklabs.watchtower.enable=true`
+- Monta `~/.docker/config.json` para autenticarse en Docker Hub
 
 ### `generated/prisma/` (raíz del proyecto)
 - Client generado por Prisma (gitignored)

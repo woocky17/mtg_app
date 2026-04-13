@@ -1,0 +1,66 @@
+name: mtg-app
+
+services:
+  mtg-db:
+    image: postgres:16-alpine
+    container_name: mtg-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: mtg
+      POSTGRES_PASSWORD: mtg_password
+      POSTGRES_DB: mtg_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mtg -d mtg_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  mtg-app:
+    image: doss2025/mtg-app:latest
+    container_name: mtg-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "postgresql://mtg:mtg_password@mtg-db:5432/mtg_db?schema=public"
+    depends_on:
+      mtg-db:
+        condition: service_healthy
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+
+  mtg-sync:
+    image: doss2025/mtg-sync:latest
+    container_name: mtg-sync
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: "postgresql://mtg:mtg_password@mtg-db:5432/mtg_db?schema=public"
+    depends_on:
+      mtg-db:
+        condition: service_healthy
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      WATCHTOWER_CLEANUP: "true"
+      WATCHTOWER_POLL_INTERVAL: "120"
+      WATCHTOWER_LABEL_ENABLE: "true"
+      DOCKER_API_VERSION: "1.44"
+      REPO_USER: ${DOCKER_USER}
+      REPO_PASS: ${DOCKER_PASS}
+    depends_on:
+      - mtg-app
+      - mtg-sync
+
+volumes:
+  postgres_data:
