@@ -19,4 +19,6 @@ export interface CardSummary {
   colors: string[];
   colorIdentity: string[];
   imageUrl: string | null;
+  /** Imagen de la segunda cara para DFCs (transform, modal_dfc, etc.). `null` si no aplica. */
+  backImageUrl: string | null;
 }

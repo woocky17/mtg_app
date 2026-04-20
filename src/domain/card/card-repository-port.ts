@@ -7,5 +7,7 @@ export interface CardRepository {
     pagination: PaginationParams,
   ): Promise<PaginatedResult<CardSummary>>;
 
-  findAllSets(): Promise<SetSummary[]>;
+  findAllSets(includeExtras: boolean): Promise<SetSummary[]>;
+
+  countAll(): Promise<number>;
 }

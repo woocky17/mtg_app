@@ -6,8 +6,14 @@
 - `PrismaCardRepository` — implementa `CardRepository` port
 - `findMany(filters, pagination)` — builds Prisma where clause, executes count + findMany, maps to CardSummary
 - Orden: `released_at desc, name asc` (cartas más nuevas primero)
-- `findAllSets()` — distinct set + set_name ordenado por nombre, retorna `SetSummary[]`
-- `resolveImageUrl(imageUris, cardFaces)` — función interna que resuelve URL de imagen (single-face y double-face)
+- **Exclusión opt-out** de `set_type in ["memorabilia", "funny", "token"]` (tokens, Un-sets silver-bordered, art series / playtest cards). Se aplica por defecto en `findMany` y `findAllSets`, y desaparece cuando el caller pasa `filters.includeExtras = true` / `findAllSets(true)`. El FilterBar expone un toggle "+ Extras" (URL param `?extras=1`)
+- Filtro de colores:
+  - `colorMode === "or"` → `color_identity: { hasSome: colors }` (contiene al menos uno, puede tener más)
+  - `colorMode === "and"` (default, "exact") → `hasEvery: colors` + `NOT hasSome: excluded` donde `excluded = WUBRG \ colors`, es decir, match exacto del color_identity
+- `findAllSets(includeExtras)` — distinct set + set_name ordenado por nombre, retorna `SetSummary[]`. Si `includeExtras` es false, oculta los sets tipo token/funny/memorabilia
+- `countAll()` — count honesto de toda la tabla `card` (sin filtros). Usado por Home para el stat "Cartas en la base"
+- `resolveImageUrl(imageUris, cardFaces)` — función interna que resuelve URL de imagen (single-face y double-face, usa la primera cara para DFCs)
+- `resolveBackImageUrl(cardFaces)` — función interna que devuelve la URL del reverso (`card_faces[1].image_uris.normal`) para DFCs (transform, modal_dfc, reversible_card, etc.). `null` si la carta es single-face
 - Select optimizado: solo los campos necesarios para CardSummary
 
 ### `src/infrastructure/external/scryfall-client.ts`
@@ -16,9 +22,15 @@
 - `getBulkDataByType(type)` — metadata de un tipo
 - `saveBulkDataToJson(type, outputDir)` — guarda metadata en JSON
 
+### `src/infrastructure/persistence/prisma-deck-repository.ts`
+- `PrismaDeckRepository` — implementa `DeckRepository`
+- `create(input)` — inserta en tabla `decks`, devuelve Deck (cuid generado por Prisma)
+- `countAll()` — count de decks
+- `findRecent(limit)` — últimos N decks por `updated_at desc`, calcula `cardCount` sumando counts del JSON
+
 ### `src/infrastructure/container.ts`
-- Factory que instancia `PrismaCardRepository`, `GetCardsUseCase` y `GetSetsUseCase`
-- Exports: `getCardsUseCase`, `getSetsUseCase` (singletons)
+- Factory que instancia repos y use cases
+- Exports: `getCardsUseCase`, `getSetsUseCase`, `createDeckUseCase`, `getHomeStatsUseCase` (singletons)
 
 ## Pending
 - Repositorios para Deck, Collection

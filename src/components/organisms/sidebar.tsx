@@ -12,8 +12,7 @@ export function Sidebar() {
         background: "var(--surface-1)",
       }}
     >
-      {/* Header */}
-      <div
+<div
         className="px-5 flex items-center justify-between shrink-0"
         style={{
           height: "52px",
@@ -35,7 +34,6 @@ export function Sidebar() {
         </button>
       </div>
 
-      {/* Stats */}
       <div className="px-5 py-4 shrink-0" style={{ borderBottom: "1px solid var(--border)" }}>
         <div className="flex justify-between mb-3">
           <StatBlock label="Cartas" value="0" />
@@ -48,14 +46,12 @@ export function Sidebar() {
         />
       </div>
 
-      {/* Card list */}
       <div className="flex-1 overflow-y-auto px-5 py-3">
         <p className="text-xs" style={{ color: "var(--text-muted)" }}>
           No hay cartas en el mazo.
         </p>
       </div>
 
-      {/* Format */}
       <div
         className="px-5 py-3 shrink-0 flex items-center gap-2"
         style={{ borderTop: "1px solid var(--border)" }}

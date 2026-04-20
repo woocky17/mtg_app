@@ -4,7 +4,7 @@ interface PaginationProps {
   currentPage: number;
   totalPages: number;
   total: number;
-  buildUrl: (overrides: { page: string }) => string;
+  buildUrl: (overrides: { page?: string; selected?: string | null }) => string;
 }
 
 export function Pagination({ currentPage, totalPages, total, buildUrl }: PaginationProps) {

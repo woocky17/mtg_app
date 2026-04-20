@@ -1,9 +1,18 @@
+export type ColorMatchMode = "and" | "or";
+
 export interface CardFilters {
   name?: string;
-  color?: string;
+  colors?: string[];
+  colorMode?: ColorMatchMode;
   rarity?: string;
   type?: string;
   set?: string;
+  /**
+   * Cuando es `true` incluye tokens, un-sets (`funny`) y memorabilia
+   * (art series, playtest cards). Por defecto/undefined estos quedan fuera
+   * del listado y del contador.
+   */
+  includeExtras?: boolean;
 }
 
 export interface PaginationParams {

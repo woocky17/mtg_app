@@ -131,3 +131,13 @@ model Card {
 
   @@map("cards")
 }
+
+model Deck {
+  id         String   @id @default(cuid())
+  name       String
+  cards      Json     // [{ cardId: string, count: number }]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("decks")
+}

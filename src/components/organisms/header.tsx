@@ -27,25 +27,33 @@ export function Header({ navItems, rightContent }: HeaderProps) {
       >
         MTG
       </Link>
-      {navItems && (
-        <div className="flex items-center gap-1">
-          {navItems.map(({ label, href }) => (
-            <Link
-              key={label}
-              href={href}
-              className="px-3 py-1 rounded text-sm transition-colors"
-              style={{ color: "var(--text-secondary)" }}
-            >
-              {label}
-            </Link>
-          ))}
-        </div>
-      )}
-      {rightContent && (
-        <span className="text-sm" style={{ color: "var(--text-secondary)" }}>
-          {rightContent}
-        </span>
-      )}
+      <div className="flex items-center gap-4">
+        {navItems && (
+          <nav className="flex items-center gap-1">
+            {navItems.map(({ label, href }) => (
+              <Link
+                key={label}
+                href={href}
+                className="px-3 py-1 rounded text-sm transition-colors"
+                style={{ color: "var(--text-secondary)" }}
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
+        )}
+        {rightContent && (
+          <span
+            className="text-sm border-l pl-4"
+            style={{
+              color: "var(--text-secondary)",
+              borderColor: "var(--border)",
+            }}
+          >
+            {rightContent}
+          </span>
+        )}
+      </div>
     </header>
   );
 }

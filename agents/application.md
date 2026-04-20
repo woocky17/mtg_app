@@ -11,6 +11,18 @@
 - `GetSetsUseCase` — class con constructor(CardRepository)
 - `execute()` → `SetSummary[]` (lista distinct de sets para dropdowns)
 
+### `src/application/deck/create-deck-use-case.ts`
+- `CreateDeckUseCase` — class con constructor(DeckRepository)
+- `execute(input)` → `Deck` (valida name no vacío y cards.length > 0)
+
+### `src/application/deck/get-decks-use-case.ts`
+- `GetDecksUseCase` — class con constructor(DeckRepository)
+- `execute()` → `DeckSummary[]` (pass-through a `findAll`)
+
+### `src/application/home/get-home-stats-use-case.ts`
+- `GetHomeStatsUseCase` — class con constructor(CardRepository, DeckRepository)
+- `execute()` → `HomeStats { cardCount, deckCount, recentDecks }` (Promise.all de los 3)
+
 ## Pending
 - GetCardByIdUseCase — detalle de carta individual
 - CreateDeckUseCase, AddCardToDeckUseCase

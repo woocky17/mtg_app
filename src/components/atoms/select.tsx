@@ -16,9 +16,13 @@ export function Select({
   className = "",
   style,
   defaultValue,
+  value,
   ...props
 }: SelectProps) {
-  const hasValue = defaultValue !== undefined && defaultValue !== "";
+  const current = value !== undefined ? value : defaultValue;
+  const hasValue = current !== undefined && current !== "";
+
+  const controlled = value !== undefined;
 
   return (
     <select
@@ -29,7 +33,7 @@ export function Select({
         color: hasValue ? "var(--text-primary)" : "var(--text-muted)",
         ...style,
       }}
-      defaultValue={defaultValue}
+      {...(controlled ? { value } : { defaultValue })}
       {...props}
     >
       {placeholder && <option value="">{placeholder}</option>}

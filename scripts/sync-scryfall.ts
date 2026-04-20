@@ -134,23 +134,19 @@ async function main() {
   const cards = await dataRes.json();
   if (!Array.isArray(cards)) throw new Error("Unexpected response format from Scryfall");
 
-  console.log(`Downloaded ${cards.length} cards. Upserting in batches of ${BATCH_SIZE}...`);
+  console.log(`Downloaded ${cards.length} cards. Replacing card table in batches of ${BATCH_SIZE}...`);
 
-  // 3. Upsert in batches
+  // 3. Wipe and bulk-insert. The Scryfall bulk IS the source of truth, so
+  //    replace-all semantics are correct and way faster than per-row upsert
+  //    (which previously hit Prisma's 5s interactive-transaction timeout).
+  //    `decks.cards` is JSON with no FK, so this is safe.
+  const deleted = await prisma.card.deleteMany();
+  console.log(`Cleared ${deleted.count} existing cards.`);
+
   let processed = 0;
   for (let i = 0; i < cards.length; i += BATCH_SIZE) {
     const batch = cards.slice(i, i + BATCH_SIZE).map(mapCard);
-
-    await prisma.$transaction(
-      batch.map((card) =>
-        prisma.card.upsert({
-          where: { id: card.id },
-          create: card,
-          update: card,
-        })
-      )
-    );
-
+    await prisma.card.createMany({ data: batch });
     processed += batch.length;
     process.stdout.write(`\r  ${processed} / ${cards.length}`);
   }

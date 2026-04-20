@@ -6,6 +6,7 @@
 - Generator: `prisma-client` con output `../generated/prisma` (fuera de src)
 - Datasource: PostgreSQL (sin URL en schema, usa env)
 - **Model Card** (tabla `cards`): ~50 campos incluyendo identifiers, core data, mana/stats, text, colors, legalities, print flags, set info, appearance, artist, rankings, URIs, market data, image URIs, timestamps
+- **Model Deck** (tabla `decks`): id (cuid), name, cards (Json — array de `{ cardId, count }`), created_at, updated_at
 
 ### `prisma/migrations/`
 - Migraciones generadas

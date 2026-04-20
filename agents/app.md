@@ -7,17 +7,31 @@
 - Metadata: title "MTG App", description "Magic: The Gathering card browser"
 - `<html lang="es" className="h-full">`
 
-### `src/app/page.tsx` (~30 líneas)
-- Compone: MainLayout + Header(navItems) + SearchBar + CardPlaceholder grid (24) + Sidebar
-- Navegación: Cartas(/cards), Mazos(#), Colección(#)
+### `src/app/page.tsx`
+- Server Component async. Llama `getHomeStatsUseCase.execute()` (try/catch con `getErrorMessage`).
+- Secciones: hero, 3 StatCards, 3 ActionCards, lista de mazos recientes (via `<DeckList>` o `<EmptyDecksState>`).
+- Helpers internos: `StatCard`, `ActionCard`. Error con `<AlertBox>`.
+- `NAV_ITEMS` importado de `@/lib/nav-items`.
 
 ### `src/app/cards/page.tsx`
-- Server Component async con `searchParams` (Promise-based, Next.js 16)
-- Parsea filtros de query params → CardFilters
-- Llama `getCardsUseCase.execute(filters, pagination)` desde `@/infrastructure/container`
-- Compone: MainLayout + Header(rightContent=count) + FilterBar + CardGrid + Pagination
-- `buildUrl()` helper para construir URLs preservando filtros
-- Try/catch alrededor del use case: renderiza estado de error amigable inline (detecta errores de conexión Prisma P1001/P1002/ECONNREFUSED)
+- Server Component async y thin. Parseo de params + construcción de URL viven en `search-params.ts`.
+- Llama `getCardsUseCase` + `getSetsUseCase` via `Promise.all`. En catch renderiza `<DbErrorState />`.
+- Compone: MainLayout + Header(navItems) + FilterBar + CardGrid + Pagination
+- `NAV_ITEMS` importado de `@/lib/nav-items`.
+
+### `src/app/cards/search-params.ts`
+- `parseCardsQuery(rawParams)` → `ParsedCardsQuery { page, name, type, set, rarity, colors, colorMode, includeExtras, selected, filters }`
+- `buildCardsUrl(CardsUrlParams, overrides?)` — reusado por la page (Pagination), `FilterBar` y `CardGrid`. Serializa `includeExtras` como `?extras=1`. `selected` es transitorio: solo se escribe al URL cuando se pasa explícitamente vía overrides (p. ej. al cruzar página desde el modal). No forma parte de `CardsUrlParams`.
+- Constante interna `VALID_COLORS` para validar query params
+
+### `src/app/decks/page.tsx`
+- Server Component async que llama `getDecksUseCase.execute()` (try/catch con `getErrorMessage`).
+- Renderiza `<DeckList showUpdatedLabel />` para los mazos, `<EmptyDecksState padding={8} />` si no hay, y `<AlertBox>` para errores.
+- `NAV_ITEMS` importado de `@/lib/nav-items`. Link "+ Crear mazo" → `/cards`.
+
+### `src/app/api/decks/route.ts`
+- `POST /api/decks` — valida body `{ name: string, cards: { cardId, count }[] }`, llama `createDeckUseCase.execute`
+- Devuelve 201 + Deck, o 400 con `{ error }` (formateado con `getErrorMessage`)
 
 ### `src/app/globals.css`
 - Tailwind CSS v4 imports + `@theme inline` block
